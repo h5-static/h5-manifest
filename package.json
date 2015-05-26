@@ -1,0 +1,22 @@
+{
+  "name": "h5-manifest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/h5-static/h5-manifest.git"
+  },
+  "author": "yyy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/h5-static/h5-manifest/issues"
+  },
+  "homepage": "https://github.com/h5-static/h5-manifest",
+  "dependencies": {
+    "make-array": "^0.1.2"
+  }
+}
