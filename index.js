@@ -6,9 +6,9 @@ var path =  require("path");
 var compiler = require('cortex-handlebars-compiler');
 
 var DIR_NANME;
-var cssLinkRxg = /<link\s+(?:rel\=[\"\']stylesheet[\"\']\s+)?(?:type\=[\"\']text\/css[\"\']\s+)?href\=[\"\']\{{3}([\w\.\/\'\"\s\-]+)\}{3}[\"\']\s*\/>/g,
+var cssLinkRxg = /<link\s+(?:rel\=[\"\']stylesheet[\"\']\s+)?(?:type\=[\"\']text\/css[\"\']\s+)?href\=[\"\']\{{3}([\w\.\/\'\"\s\-]+)\}{3}[\"\']\s*\/?>/g,
 	hrefRxg = /\{{3}\s*(static|modfile)\s*[\'\"]([\w\.\/\s\-]+)[\'\"]\s*\}{3}/,
-	imgHrefRxg = /<img\s+src\=[\'\"]\{{3}(static|modfile)\s+[\'\"]([\w\.\/\'\"\s\-]+)[\'\"]\s*\}{3}[\'\"]\s*\/>/g,
+	imgHrefRxg = /<img\s+src\=[\'\"]\{{3}(static|modfile)\s+[\'\"]([\w\.\/\'\"\s\-]+)[\'\"]\s*\}{3}[\'\"]\s*\/?>/g,
 	bgHrefRxg = /url\([\'\"]?([\w\.\/\s\-]+)[\'\"]?\)/g,
 	bgSrcRxg = /url\([\'\"]?([\w\.\/\s\-]+)[\'\"]?\)/;
 
