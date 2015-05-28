@@ -6,9 +6,9 @@ var path =  require("path");
 var compiler = require('cortex-handlebars-compiler');
 
 var DIR_NANME;
-var cssLinkRxg = /<link\s+(?:rel\=[\"\']stylesheet[\"\']\s+)?(?:type\=[\"\']text\/css[\"\']\s+)?href\=[\"\']\{{3}([\w\.\/\'\"\s\-]+)\}{3}[\"\']\s*\/>/g,
+var cssLinkRxg = /<link\s+(?:rel\=[\"\']stylesheet[\"\']\s+)?(?:type\=[\"\']text\/css[\"\']\s+)?href\=[\"\']\{{3}([\w\.\/\'\"\s\-]+)\}{3}[\"\']\s*\/?>/g,
 	hrefRxg = /\{{3}\s*(static|modfile)\s*[\'\"]([\w\.\/\s\-]+)[\'\"]\s*\}{3}/,
-	imgHrefRxg = /<img\s+src\=[\'\"]\{{3}(static|modfile)\s+[\'\"]([\w\.\/\'\"\s\-]+)[\'\"]\s*\}{3}[\'\"]\s*\/>/g,
+	imgHrefRxg = /<img\s+src\=[\'\"]\{{3}(static|modfile)\s+[\'\"]([\w\.\/\'\"\s\-]+)[\'\"]\s*\}{3}[\'\"]\s*\/?>/g,
 	bgHrefRxg = /url\([\'\"]?([\w\.\/\s\-]+)[\'\"]?\)/g,
 	bgSrcRxg = /url\([\'\"]?([\w\.\/\s\-]+)[\'\"]?\)/;
 
@@ -61,15 +61,15 @@ function readHTMLFile(file,filePath){
 
 function readImg2Css(arr){
 	var imgArr = [], imgStrArr = [];
-	arr.forEach(function(item){
+	arr.forEach(function(cssItem){
 		
-		if(item.type == "modfile"){
+		if(cssItem.type == "modfile"){
 			return ;
 		}
 
 
 		var csslink = "",
-			cssLinkArr = item.path.split("/");
+			cssLinkArr = cssItem.path.split("/");
 
 		for(var i = 0; i< cssLinkArr.length; i++){
 			if(cssLinkArr[i] != ".."){
@@ -82,10 +82,13 @@ function readImg2Css(arr){
 
 		makeArray(imgSrcArr).forEach(function(item){
 
-			if(imgArr.indexOf(bgSrcRxg.exec(item)[1]) == -1){
-				imgArr.push(bgSrcRxg.exec(item)[1]);
+			var imgPath = bgSrcRxg.exec(item)[1];
+			if (!path.isAbsolute(imgPath)) {
+				imgPath = path.join(path.dirname(cssItem.path), imgPath);
 			}
-
+			if(imgArr.indexOf(imgPath) == -1){
+				imgArr.push(imgPath);
+			}
 		})
 	})
 
