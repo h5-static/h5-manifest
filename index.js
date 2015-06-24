@@ -3,17 +3,18 @@ var makeArray = require("make-array");
 var  argv =  process.argv;
 var rootPath = process.cwd();
 var path =  require("path");
-var compiler = require('cortex-handlebars-compiler');
 
 var DIR_NANME;
 var cssLinkRxg = /<link\s+(?:rel\=[\"\']stylesheet[\"\']\s+)?(?:type\=[\"\']text\/css[\"\']\s+)?href\=[\"\']\{{3}([\w\.\/\'\"\s\-]+)\}{3}[\"\']\s*\/?>/g,
 	hrefRxg = /\{{3}\s*(static|modfile)\s*[\'\"]([\w\.\/\s\-]+)[\'\"]\s*\}{3}/,
 	imgHrefRxg = /<img\s+src\=[\'\"]\{{3}(static|modfile)\s+[\'\"]([\w\.\/\'\"\s\-]+)[\'\"]\s*\}{3}[\'\"]\s*\/?>/g,
 	bgHrefRxg = /url\([\'\"]?([\w\.\/\s\-]+)[\'\"]?\)/g,
-	bgSrcRxg = /url\([\'\"]?([\w\.\/\s\-]+)[\'\"]?\)/;
+	bgSrcRxg = /url\([\'\"]?([\w\.\/\s\-]+)[\'\"]?\)/,
+	jsSrcRxg = /\{{3}\s*(facade)\s*[\'\"]([\w\.\/\s\-]+)[\'\"]\s*\}{3}/;
 
 
 function readHTMLFile(file,filePath){
+	
 	var fileStream = file;
 	var cssLinkArr = fileStream.match(cssLinkRxg);
 	var img2HTMLLinkArr = fileStream.match(imgHrefRxg);
@@ -39,11 +40,11 @@ function readHTMLFile(file,filePath){
 	imgArr = imgArr.concat(img2CssArr);
 
 	//cortex.js中依赖的js
-	var jsArr = readJson();
+	var jsArr = readJson(fileStream);
 
 	var maps = concatArr(cssArr, imgArr, jsArr, htmlArr);
 
-	var cachename = file.replace("html","appcache");
+	// var cachename = file.replace("html","appcache");
 
 	//writeFile(cachename, maps)
 	var data = "CACHE MANIFEST\n";
@@ -113,9 +114,11 @@ function autoUpdate(str){
 
 
 
-function readJson(){
+function readJson(stream){
 
-	var jsArr = []
+	
+
+	var jsArr = [];
 	var dependencies = JSON.parse(fs.readFileSync(rootPath+"/cortex.json","utf-8")).dependencies;
 
 	for(var i in dependencies){
@@ -127,6 +130,7 @@ function readJson(){
 }
 
 function concatArr(){
+
 	var arr = []
 	for(var i = 0 ;i < arguments.length; i++){
 		arr = arr.concat(arguments[i]);
@@ -143,12 +147,18 @@ function readLink(arr){
 	makeArray(arr).forEach(function(item){
 		var match = hrefRxg.exec(item);
 		if(!match)
-			return ;
+			return;
 		var nameArr = match[2].split("/"),
 			name = nameArr[nameArr.length - 1];
 		newArr.push({"link": match[0], "path": match[2], "name": name,"type":match[1]});
 	})
 	return newArr;
+
+}
+
+function test () {
+
+	
 
 }
 
