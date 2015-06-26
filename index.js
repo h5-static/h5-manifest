@@ -67,6 +67,7 @@ function readHTMLFile(file,filePath){
 
 function readImg2Css(arr){
 	var imgArr = [], imgStrArr = [];
+
 	arr.forEach(function(item){
 		
 		if(item.type == "modfile"){
@@ -89,14 +90,18 @@ function readImg2Css(arr){
 		makeArray(imgSrcArr).forEach(function(item){
 
 			if(imgArr.indexOf(bgSrcRxg.exec(item)[1]) == -1){
-				imgArr.push(bgSrcRxg.exec(item)[1]);
+
+				imgArr.push(transformImgPath(bgSrcRxg.exec(item)[1], cssLinkArr));
+
 			}
 
 		})
 	})
 
 	makeArray(imgArr).forEach(function(item){
+
 		imgStrArr.push("{{{static '" + item + "'}}}");
+
 	})
 
 	return imgStrArr;
@@ -203,5 +208,78 @@ function readLink(arr){
 
 }
 
+function transformImgPath(imgpath, csspath) {
+
+	var imgPathArr = imgpath.split("/");
+
+
+	if(imgPathArr[0] !== ".."){
+
+		if(imgPathArr[1] == ".."){
+			var cssArr = [],imgArr = [];
+
+			imgPathArr.splice(0, 1);
+
+			for(var i = csspath.length; i > 0; i--){
+
+				if(!/^([\w\/\s\-]+)\.css$/.test(csspath[i - 1])){
+					cssArr.push(csspath[i - 1]);
+				}
+
+			}
+
+			for(var i = 0; i < imgPathArr.length; i++){
+				if(imgPathArr[0] == ".."){
+					cssArr.splice(0, 1);
+					imgPathArr.splice(0,1);
+				}
+
+			}
+
+			imgArr = concatArr(cssArr.reverse(), imgPathArr);
+
+			return imgArr.join("/");
+
+		}else{
+			imgPathArr[0] == "." ? imgPathArr.splice(0,1) : function() {};
+
+			for(var i = csspath.length ; i > 0; i--){
+
+				if(!/^([\w\/\s\-]+)\.css$/.test(csspath[i - 1])){
+					imgPathArr.splice(0,0,csspath[i - 1]);
+				}
+
+			}
+
+			return imgPathArr.join("/");
+		}
+
+	}else{
+
+		var cssArr = [],imgArr = [];
+
+		for(var i = csspath.length; i > 0; i--){
+
+			if(!/^([\w\/\s\-]+)\.css$/.test(csspath[i - 1])){
+				cssArr.push(csspath[i - 1]);
+			}
+
+		}
+
+		for(var i = 0; i < imgPathArr.length; i++){
+			if(imgPathArr[0] == ".."){
+				cssArr.splice(0, 1);
+				imgPathArr.splice(0,1);
+			}
+
+		}
+
+		imgArr = concatArr(cssArr.reverse(), imgPathArr);
+
+		return imgArr.join("/")
+
+	}
+
+}
 
 module.exports =  readHTMLFile;
