@@ -3,7 +3,8 @@ var makeArray = require("make-array");
 var  argv =  process.argv;
 var rootPath = process.cwd();
 var path =  require("path");
-// var compiler = require('cortex-handlebars-compiler');
+var rewriteExt = require("rewrite-ext");
+
 
 var DIR_NANME;
 var cssLinkRxg = /<link\s+(?:rel\=[\"\']stylesheet[\"\']\s+)?(?:type\=[\"\']text\/css[\"\']\s+)?href\=[\"\']\{{3}([\w\.\/\'\"\s\-]+)\}{3}[\"\']\s*\/>/g,
@@ -121,46 +122,42 @@ function autoUpdate(str){
 
 function makeJsArr(fileStream,filePath) {
 
+	var jsPath = "";
+
 	if(!fileStream.match(jsSrcRxg)){
 		return;
 	}
- 
 	var jsLink = fileStream.match(jsSrcRxg)[2];
 
-	var js2HtmlArr = jsLink.split("/"),
-		htmlPathArr = filePath.split("/"),
-		rootPathArr = rootPath.split("/");
+	var js2HtmlArr = jsLink.split("/");
 
-	var relativePathArr = [];
-	var relativeJsPathArr = [];
-
-	htmlPathArr.forEach(function(item){
-		if(rootPathArr.indexOf(item) == -1){
-			relativePathArr.push(item);
-		}
-	});
-
-	js2HtmlArr.forEach(function(item){
-
-		if(rootPathArr.indexOf(item) == -1){
-			relativeJsPathArr.push(item);
-		}
-
+	// 去除空值
+	js2HtmlArr = js2HtmlArr.filter(function(item){
+		return !!item;
 	})
 
-	var num = relativePathArr.length 
-
-	if(num == 1){
-		relativeJsPathArr.splice(".");
+	if(js2HtmlArr.length == 1){
+		var cortexJson = JSON.parse(fs.readFileSync(rootPath+"/cortex.json","utf-8"));
+		jsPath = cortexJson.main || "index.js";
+	}else if(js2HtmlArr.length > 1){
+		// 等于实际地址
+		// 去除模块名
+		js2HtmlArr.splice(0,1);
+		// 算出相对文件路径
+		jsPath = js2HtmlArr.join("/");
 	}else{
-		for(var i = 1; i < relativePathArr.length; i++ ){
-			relativeJsPathArr.splice(0, 0, "..");
-		}
+		// over
+		return "";
 	}
 
-	return "{{{static '" + relativeJsPathArr.join("/") + ".js'}}}";
+
+	// 算出html的相对路径，用于本地
+	htmlRel = path.dirname(filePath.replace(rootPath,"")).split("/").map(function(item){
+		return item ? "../" : ""
+	}).join("");
 
 
+	return jsPath ? "{{{static '" +rewriteExt(path.join(htmlRel,jsPath),".js")+ "'}}}" : "";
 }
 
 

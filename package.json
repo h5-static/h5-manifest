@@ -1,6 +1,6 @@
 {
   "name": "h5-manifest",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/h5-static/h5-manifest",
   "dependencies": {
-    "make-array": "^0.1.2"
+    "make-array": "^0.1.2",
+    "rewrite-ext": "^0.2.0"
   }
 }
