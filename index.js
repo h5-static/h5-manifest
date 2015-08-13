@@ -127,6 +127,7 @@ function makeJsArr(fileStream,filePath) {
 	if(!fileStream.match(jsSrcRxg)){
 		return;
 	}
+	
 	var jsLink = fileStream.match(jsSrcRxg)[2];
 
 	var js2HtmlArr = jsLink.split("/");
