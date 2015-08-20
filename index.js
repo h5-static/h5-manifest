@@ -45,7 +45,8 @@ function readHTMLFile(file,filePath){
 	imgArr = imgArr.concat(img2CssArr);
 
 	//cortex.js中依赖的js，外部资源和html中的js路径
-	var jsArr = concatArr(readJson(), makeJsArr(file,filePath));
+	// var jsArr = concatArr(readJson(), makeJsArr(file,filePath));
+	var jsArr = readJson();
 
 	var maps = concatArr(cssArr, imgArr, jsArr, htmlArr);
 
