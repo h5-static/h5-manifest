@@ -3,7 +3,7 @@ var makeArray = require("make-array");
 var  argv =  process.argv;
 var root_path = process.cwd();
 var path =  require("path");
-var combo = require(".'/lib/combo");
+var combo = require("./lib/combo");
 var nocombo = require("./lib/nocombo");
 var H5Ejs = require("h5-ejs");
 var isDev = !process.env.ENV || process.env.ENV == "dev";
